@@ -37,10 +37,10 @@ export default function Sidebar({
       {/* Brand */}
       <div className="px-5 pt-6 pb-4 shrink-0">
         <h1 className="font-display text-xl text-text-primary leading-none tracking-tight">
-          RAG Nexus
+          牵星
         </h1>
         <p className="mt-1 font-mono text-[10px] text-text-muted uppercase tracking-[0.2em]">
-          知识引擎
+          StarTether
         </p>
       </div>
 
