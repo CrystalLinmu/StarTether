@@ -1,0 +1,36 @@
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+
+# ── 敏感配置 ──
+.env
+
+# ── 前端 ──
+frontend/node_modules/
+frontend/dist/
+
+# ── 运行时数据 ──
+data/
+
+# ── IDE ──
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── 备份 / 旧版 / 实验前端 ──
+frontend_backup_*/
+frontend_old/
+_incoming_frontend/
+
+# ── 测试文档（体积大） ──
+test_docs/
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+Desktop.ini

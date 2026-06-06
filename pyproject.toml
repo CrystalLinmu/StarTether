@@ -1,0 +1,30 @@
+[project]
+name = "rag-new"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "httpx>=0.28.0",
+    "jieba>=0.42.1",
+    "langsmith>=0.7.36",
+    "openai>=1.60.0",
+    "pgvector>=0.3.6",
+    "psycopg[binary]>=3.2.0",
+    "pydantic-settings>=2.7.0",
+    "pypdf>=5.1.0",
+    "pymilvus>=2.5.0",
+    "python-docx>=1.1.2",
+    "python-dotenv>=1.0.1",
+    "python-multipart>=0.0.20",
+    "uvicorn>=0.34.0",
+    "networkx>=3.6.1",
+    "rapidfuzz>=3.14.5",
+    "python-louvain>=0.16",
+    "neo4j>=6.2.0",
+    "graphrag>=3.1.0",
+    "sentence-transformers>=5.5.1",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
