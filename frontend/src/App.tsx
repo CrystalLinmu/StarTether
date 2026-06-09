@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import {
   createFolder,
@@ -40,6 +40,7 @@ function AppShell() {
   const [uploadStatus, setUploadStatus] = useState("");
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadUploading, setUploadUploading] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
   const [uploadStats, setUploadStats] = useState<UploadStats | null>(null);
   const [uploadGraphStats, setUploadGraphStats] = useState<{ entities?: number; relationships?: number } | null>(null);
   const [pinnedSessions, setPinnedSessions] = useState<string[]>(() => {
@@ -66,14 +67,16 @@ function AppShell() {
   async function handleUpload(file: File, folderId: string | null) {
     setUploadOpen(true); setUploadUploading(true); setUploadSteps([]); setUploadStats(null); setUploadGraphStats(null);
     setUploadStatus(`准备上传：${file.name}`);
+    const controller = new AbortController();
+    abortRef.current = controller;
     try {
       const result: UploadDone | null = folderId
         ? await uploadDocumentToFolder(folderId, file, (step) => {
             setUploadSteps((prev) => [...prev, step]);
-          })
+          }, controller.signal)
         : await uploadDocument(file, (step) => {
             setUploadSteps((prev) => [...prev, step]);
-          });
+          }, controller.signal);
       setUploadStats({
         ...(result?.stats || {}),
         filename: result?.filename || file.name,
@@ -191,7 +194,7 @@ function AppShell() {
         stats={uploadStats}
         graphStats={uploadGraphStats}
         uploading={uploadUploading}
-        onClose={() => { setUploadOpen(false); setUploadUploading(false); setUploadSteps([]); setUploadStats(null); }}
+        onClose={() => { abortRef.current?.abort(); setUploadOpen(false); setUploadUploading(false); setUploadSteps([]); setUploadStats(null); }}
         onUpload={handleUpload}
       />
       <Layout

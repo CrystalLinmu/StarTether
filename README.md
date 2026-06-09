@@ -1,8 +1,8 @@
-# RAG Nexus · 企业级知识引擎
+# 牵星 · StarTether
 
 <div align="center">
 
-**多级检索增强生成平台** · Hybrid RAG + GraphRAG + 知识图谱可视化
+**企业级知识引擎** · 多级检索路由 + GraphRAG + 知识图谱可视化
 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.136-green.svg)](https://fastapi.tiangolo.com/)
@@ -55,6 +55,28 @@
 - 文档摄入 SSE 进度推送
 - 检索步骤 SSE 实时可视化
 - 回答 Token 级流式输出
+
+---
+
+## 界面预览
+
+### AI 问答
+<div align="center">
+  <img src="docs/images/chat-generation.png" alt="AI 问答界面" width="800">
+  <p><em>检索过程实时可视化，右侧面板展示 L0-L3 各阶段耗时与结果</em></p>
+</div>
+
+### 文档入库
+<div align="center">
+  <img src="docs/images/ingestion-progress.png" alt="文档入库过程" width="800">
+  <p><em>SSE 流式推送解析→分块→向量化→图谱提取全链路进度</em></p>
+</div>
+
+### 知识图谱
+<div align="center">
+  <img src="docs/images/knowledge-graph.png" alt="知识图谱可视化" width="800">
+  <p><em>Neo4j + vis-network 交互式图谱，支持实体搜索与关系溯源</em></p>
+</div>
 
 ---
 
@@ -238,4 +260,4 @@ RAG_new/
 
 ## License
 
-MIT © RAG Nexus
+MIT © StarTether

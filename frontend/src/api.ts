@@ -202,10 +202,11 @@ export type UploadDone = {
 export async function uploadDocument(
   file: File,
   onStep: (step: StreamStep) => void,
+  signal?: AbortSignal,
 ) {
   const form = new FormData();
   form.append("file", file);
-  const res = await fetch("/ingest/stream", { method: "POST", body: form });
+  const res = await fetch("/ingest/stream", { method: "POST", body: form, signal });
   if (!res.ok || !res.body) {
     throw new Error(await res.text());
   }
@@ -289,12 +290,14 @@ export async function uploadDocumentToFolder(
   folderId: string,
   file: File,
   onStep: (step: StreamStep) => void,
+  signal?: AbortSignal,
 ) {
   const form = new FormData();
   form.append("file", file);
   const res = await fetch(`/folders/${encodeURIComponent(folderId)}/ingest/stream`, {
     method: "POST",
     body: form,
+    signal,
   });
   if (!res.ok || !res.body) throw new Error(await res.text());
   let donePayload: UploadDone | null = null;

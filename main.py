@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 from pathlib import Path
-from queue import Empty, Queue
+from queue import Empty, Queue  # Queue used only in sync chat_stream; async endpoints use asyncio.Queue
 from threading import Thread
 from tempfile import NamedTemporaryFile
 
@@ -153,14 +153,15 @@ async def ingest_stream(
     async def event_generator():
 
         settings = get_settings()
-        events: Queue[dict] = Queue()
+        events: asyncio.Queue = asyncio.Queue()
+        loop = asyncio.get_event_loop()
         result_holder: dict = {}
 
         def emit(code: str, label: str, data: dict | None = None) -> None:
             event = {"type": "step", "code": code, "label": label}
             if data:
                 event.update(data)
-            events.put(event)
+            loop.call_soon_threadsafe(events.put_nowait, event)
 
         def ingest_worker() -> None:
             nonlocal folder_id
@@ -221,15 +222,15 @@ async def ingest_stream(
                 result_holder["error"] = str(exc)
             finally:
                 temp_path.unlink(missing_ok=True)
-                events.put({"type": "ingest_finished"})
+                loop.call_soon_threadsafe(events.put_nowait, {"type": "ingest_finished"})
 
         worker = Thread(target=ingest_worker, daemon=True)
         worker.start()
 
         while True:
             try:
-                event = events.get(timeout=0.2)
-            except Empty:
+                event = await asyncio.wait_for(events.get(), timeout=0.2)
+            except asyncio.TimeoutError:
                 if not worker.is_alive():
                     break
                 continue
@@ -760,14 +761,15 @@ async def folder_ingest_stream(
     async def event_generator():
 
         settings = get_settings()
-        events: Queue[dict] = Queue()
+        events: asyncio.Queue = asyncio.Queue()
+        loop = asyncio.get_event_loop()
         result_holder: dict = {}
 
         def emit(code: str, label: str, data: dict | None = None) -> None:
             event = {"type": "step", "code": code, "label": label}
             if data:
                 event.update(data)
-            events.put(event)
+            loop.call_soon_threadsafe(events.put_nowait, event)
 
         def ingest_worker() -> None:
             try:
@@ -821,15 +823,15 @@ async def folder_ingest_stream(
                 result_holder["error"] = str(exc)
             finally:
                 temp_path.unlink(missing_ok=True)
-                events.put({"type": "ingest_finished"})
+                loop.call_soon_threadsafe(events.put_nowait, {"type": "ingest_finished"})
 
         worker = Thread(target=ingest_worker, daemon=True)
         worker.start()
 
         while True:
             try:
-                event = events.get(timeout=0.2)
-            except Empty:
+                event = await asyncio.wait_for(events.get(), timeout=0.2)
+            except asyncio.TimeoutError:
                 if not worker.is_alive():
                     break
                 continue

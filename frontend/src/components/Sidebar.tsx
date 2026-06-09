@@ -232,7 +232,6 @@ function SessionRow({
               className="flex w-full items-center gap-2 px-3 py-1.5 hover:bg-error-bg text-error"
               onClick={async (e) => {
                 e.stopPropagation(); setMenuOpen(false);
-                if (!confirm(`确定删除会话"${session.title || '新会话'}"？此操作不可恢复。`)) return;
                 try { await onDelete(); } catch (err) { alert(`删除失败：${err}`); }
               }}
             >
